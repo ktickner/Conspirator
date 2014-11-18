@@ -1,6 +1,7 @@
 @charset "UTF-8";
 /* CSS Document */
 
+
 body{
 	margin-top: 0px;
 }
@@ -45,8 +46,15 @@ nav {
     -webkit-box-shadow: 0 17px 22px -20px #c4c4c4;
     -moz-box-shadow: 0 12px 12px -10px #c4c4c4;
 }
-.thumbnail img { width:100%; height:auto; } /* to keep proportions */
-.thumbnails p { text-align: center; padding: 10px; } /* captions can be styled with an inline element */
+.thumbnail img {
+	width:100%;
+	height:auto;
+}
+
+.thumbnails p {
+	text-align: center;
+	padding: 10px;
+}
 
 .centered {
 	margin: 0px auto;

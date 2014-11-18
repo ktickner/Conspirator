@@ -1,29 +1,72 @@
-<div class="container">
-	<div class="col-md-12">
-		<div class="row">
-			<h1>TheConspirator.com CRUD Grid</h1>
-		</div>
-		
-		<div class="row">
-			<div class="col-md-6">
-				<div class="row">
-					<div class="col-md-9 center-block">
-						<div class="well">
-							<a href="index.php?page=crudarticle"><h2>Articles</h2></a>
-						</div>
-					</div>
-				</div>
+<?php
+	include 'database.php';
+	$pdo = Database::connect();
+	$type = (isset($_GET['type']) ? $_GET['type'] : null);
+	if ($type == null)
+	{
+		//show error
+	}
+	elseif ($type == "archive")
+	{
+	$sql = 'SELECT * FROM article WHERE is_archive=1 ORDER BY id DESC';
+	}
+	elseif ($type == "article")
+	{
+	$sql = 'SELECT * FROM article WHERE is_archive=0 ORDER BY id DESC';
+	}
+	
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<link   href="styles/bootstrap.css" rel="stylesheet">
+		<script src="js/bootstrap.js"></script>
+		<title></title>
+	</head>
+
+	<body>
+		<div class="container">
+			<div class="row">
+				<h3>The Conspirator CRUD Grid</h3>
 			</div>
-			
-			<div class="col-md-6">
-				<div class="row">
-					<div class="col-md-9 center-block">
-						<div class="well">
-							<a href="index.php?page=crudarchive"><h2>Archives</h2></a>
-						</div>
-					</div>
-				</div>
+			<div class="row">
+				<p>
+					<a href="create.php" class="btn btn-success">Create</a>
+				</p>
+				<table class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Date Created</th>
+							<th>Category</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php
+							
+							foreach ($pdo->query($sql) as $row) {
+								echo '<tr>';
+								echo '<td>'. $row['id'] . '</td>';
+								echo '<td>'. $row['article_name'] . '</td>';
+								echo '<td>'. $row['date_created'] . '</td>';
+								echo '<td>'. $row['category_id'] . '</td>';
+								echo '<td width=250>';
+                                echo '<a class="btn" href="index.php?page=read&type='.$type.'&id='.$row['id'].'">Read</a>';
+                                echo ' ';
+                                echo '<a class="btn" href="index.php?page=update&type='.$type.'&id='.$row['id'].'">Update</a>';
+                                echo ' ';
+                                echo '<a class="btn" href="index.php?page=delete&type='.$type.'&id='.$row['id'].'">Delete</a>';
+                                echo '</td>';
+								echo '</tr>';
+							}
+							Database::disconnect();
+						?>
+					</tbody>
+				</table>
 			</div>
-		</div>
-	</div>
-</div>
+		</div> <!-- /container -->
+	</body>
+</html>
