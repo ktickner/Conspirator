@@ -4,7 +4,7 @@
 	$type = (isset($_GET['type']) ? $_GET['type'] : null);
 	if ($type == null)
 	{
-		//show error
+		$sql = null;
 	}
 	elseif ($type == "archive")
 	{
@@ -33,8 +33,27 @@
 			</div>
 			<div class="row">
 				<p>
-					<a href="create.php" class="btn btn-success">Create</a>
+				<?php
+					echo'<a href="index.php?page=create&type='.$type.'" class="btn btn-success">Create</a>';
+				?>
 				</p>
+				
+				<?php
+					if ($sql == null)
+					{
+				?>
+				
+				<div class="alert alert-warning">
+					<h3>There's nothing here</h3>
+				</div>
+				
+				<?php
+					}
+					
+					else
+					{
+				?>
+				
 				<table class="table table-striped table-bordered">
 					<thead>
 						<tr>
@@ -45,8 +64,8 @@
 						</tr>
 					</thead>
 					<tbody>
-						<?php
-							
+					
+				<?php	
 							foreach ($pdo->query($sql) as $row) {
 								echo '<tr>';
 								echo '<td>'. $row['id'] . '</td>';
@@ -54,16 +73,18 @@
 								echo '<td>'. $row['date_created'] . '</td>';
 								echo '<td>'. $row['category_id'] . '</td>';
 								echo '<td width=250>';
-                                echo '<a class="btn" href="index.php?page=read&type='.$type.'&id='.$row['id'].'">Read</a>';
-                                echo ' ';
-                                echo '<a class="btn" href="index.php?page=update&type='.$type.'&id='.$row['id'].'">Update</a>';
-                                echo ' ';
-                                echo '<a class="btn" href="index.php?page=delete&type='.$type.'&id='.$row['id'].'">Delete</a>';
-                                echo '</td>';
+								echo '<a class="btn" href="index.php?page=read&type='.$type.'&id='.$row['id'].'">Read</a>';
+								echo ' ';
+								echo '<a class="btn" href="index.php?page=update&type='.$type.'&id='.$row['id'].'">Update</a>';
+								echo ' ';
+								echo '<a class="btn" href="index.php?page=delete&type='.$type.'&id='.$row['id'].'">Delete</a>';
+								echo '</td>';
 								echo '</tr>';
 							}
-							Database::disconnect();
-						?>
+						}
+						Database::disconnect();
+				?>
+					
 					</tbody>
 				</table>
 			</div>

@@ -5,14 +5,27 @@
     if ( !empty($_POST)) {
         // keep track validation errors
         $nameError = null;
-        $emailError = null;
-        $mobileError = null;
+        $imageError = null;
+        $contentError = null;
+        $dateError = null;
+        $authorError = null;
+        $categoryError = null;
+        $isArchiveError = null;
+        $quickFactsError = null;
          
         // keep track post values
         $name = $_POST['name'];
-        $email = $_POST['email'];
-        $mobile = $_POST['mobile'];
+        $image = $_POST['image'];
+        $content = $_POST['content'];
+        $date = $_POST['date'];
+        $author = $_POST['author'];
+        $category = $_POST['category'];
+        $isArchive = $_POST['isArchive'];
+        $quickFacts = (isset($_POST['quickFacts']) ? $_POST['quickFacts'] : null;
          
+		 //up to editing validations
+		 
+		 
         // validate input
         $valid = true;
         if (empty($name)) {
@@ -44,24 +57,48 @@
             header("Location: index.php");
         }
     }
+	
+	$type = (isset($_GET['type']) ? $_GET['type'] : null);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<link   href="css/bootstrap.min.css" rel="stylesheet">
-		<script src="js/bootstrap.min.js"></script>
+		<link   href="styles/bootstrap.css" rel="stylesheet">
+		<script src="js/bootstrap.js"></script>
 	</head>
 
 	<body>
 		<div class="container">
+			<?php
+				if ($type == 'article' || $type == 'archive')
+				{
+				
+					if($type == 'archive')
+					{
+			?>
 
-			<div class="span10 offset1">
+			<div class="col-md-10 center-block">
 				<div class="row">
-					<h3>Create a Customer</h3>
+					<h3>Write an Archive</h3>
 				</div>
 
+			<?php
+					}
+					else
+					{
+			?>
+			
+			<div class="col-md-10 center-block">
+				<div class="row">
+					<h3>Write an Article</h3>
+				</div>
+				
+			<?php
+					}
+			?>
+				
 				<form class="form-horizontal" action="create.php" method="post">
 					<div class="control-group <?php echo !empty($nameError)?'error':'';?>">
 						<label class="control-label">Name</label>
@@ -92,10 +129,24 @@
 					</div>
 					<div class="form-actions">
 						<button type="submit" class="btn btn-success">Create</button>
-						<a class="btn" href="index.php">Back</a>
+						<?php echo'<a class="btn" href="index.php?page=crud&type='.$type.'">Back</a>';?>
 					</div>
 				</form>
 			</div>
+			
+			<?php
+				}
+			else
+			{
+			?>
+			
+			<div class="alert alert-danger">
+				<h3>I'm not sure you're meant to be here! PLease return to the homepage <a href="index.php">here</a></h3>
+			</div>
+			
+			<?php
+			}
+			?>
 
 		</div> <!-- /container -->
 	</body>
