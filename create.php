@@ -1,6 +1,8 @@
 <?php
      
     require 'database.php';
+	
+	$type = (isset($_GET['type']) ? $_GET['type'] : null);
  
     if ( !empty($_POST)) {
         // keep track validation errors
@@ -29,36 +31,64 @@
         // validate input
         $valid = true;
         if (empty($name)) {
-            $nameError = 'Please enter Name';
+            $nameError = 'Please enter the Article name';
             $valid = false;
         }
          
-        if (empty($email)) {
-            $emailError = 'Please enter Email Address';
+        if (empty($image)) {
+            $emailError = 'Please enter feature image';
             $valid = false;
-        } else if ( !filter_var($email,FILTER_VALIDATE_EMAIL) ) {
-            $emailError = 'Please enter a valid Email Address';
+		}
+         
+        if (empty($content)) {
+            $mobileError = 'Please enter some content';
             $valid = false;
         }
          
-        if (empty($mobile)) {
-            $mobileError = 'Please enter Mobile Number';
+        if (empty($category)) {
+            $mobileError = 'Please select a Category';
             $valid = false;
         }
+        
+		if	($type == 'archive')
+		{
+			if (empty($quickFacts)) {
+				$mobileError = 'Please enter some quick facts';
+				$valid = false;
+			}
+		}
          
-        // insert data
-        if ($valid) {
-            $pdo = Database::connect();
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "INSERT INTO customers (name,email,mobile) values(?, ?, ?)";
-            $q = $pdo->prepare($sql);
-            $q->execute(array($name,$email,$mobile));
-            Database::disconnect();
-            header("Location: index.php");
-        }
+		 
+		if ($type == 'article')
+		{
+			// insert data
+			if ($valid) {
+				$pdo = Database::connect();
+				$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$sql = "INSERT INTO customers (article_name,image,content,date_created,author_id,category_id,is_archive) values(?, ?, ?, ?, ?, ?, ?)";
+				$q = $pdo->prepare($sql);
+				$q->execute(array($name,$image,$content,$date,$author,$category,$isArchive));
+				Database::disconnect();
+				header("Location: index.php?page=crud&type=".$type);
+			}
+		}
+		elseif ($type == 'archive')
+		{
+			// insert data
+			if ($valid) {
+				$pdo = Database::connect();
+				$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				//sigh confusing
+				$sql = "INSERT INTO customers (article_name,image,content,date_created,author_id,category_id,is_archive) 
+							values(?, ?, ?, ?, ?, ?, ?);
+						INSERT INTO archive_facts ()";
+				$q = $pdo->prepare($sql);
+				$q->execute(array($name,$image,$content,$date,$author,$category,$isArchive));
+				Database::disconnect();
+				header("Location: index.php?page=crud&type=".$type);
+			}
+		}
     }
-	
-	$type = (isset($_GET['type']) ? $_GET['type'] : null);
 ?>
 
 <!DOCTYPE html>

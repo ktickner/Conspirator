@@ -10,7 +10,7 @@
 	} else {
 		$pdo = Database::connect();
 		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		$sql = "SELECT * FROM customers where id = ?";
+		$sql = "SELECT * FROM article where id = ?";
 		$q = $pdo->prepare($sql);
 		$q->execute(array($id));
 		$data = $q->fetch(PDO::FETCH_ASSOC);
@@ -31,12 +31,12 @@
 
 			<div class="span10 offset1">
 				<div class="row">
-					<h3>Read a Customer</h3>
+					<h3>Article ID: <?php echo $data['id'] ?></h3>
 				</div>
 
 				<div class="form-horizontal" >
 					<div class="control-group">
-						<label class="control-label">Name</label>
+						<label class="control-label">Article Name</label>
 						<div class="controls">
 							<label class="checkbox">
 							<?php echo $data['name'];?>
@@ -44,25 +44,50 @@
 						</div>
 					</div>
 					<div class="control-group">
-						<label class="control-label">Email Address</label>
+						<label class="control-label">Feature Image:</label>
 						<div class="controls">
 							<label class="checkbox">
-							<?php echo $data['email'];?>
+							<?php echo $data['image'];?>
 							</label>
 						</div>
 					</div>
 					<div class="control-group">
-						<label class="control-label">Mobile Number</label>
+						<label class="control-label">Article Content:</label>
 						<div class="controls">
 							<label class="checkbox">
-							<?php echo $data['mobile'];?>
+							<?php echo $data['content'];?>
+							</label>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">Date Created:</label>
+						<div class="controls">
+							<label class="checkbox">
+							<?php echo $data['date_created'];?>
+							</label>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">Article Author:</label>
+						<div class="controls">
+							<label class="checkbox">
+							<?php echo $data['author_id'];?>
+							</label>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">Category:</label>
+						<div class="controls">
+							<label class="checkbox">
+							<?php echo $data['category_id'];?>
 							</label>
 						</div>
 					</div>
 					<div class="form-actions">
-						<a class="btn" href="index.php">Back</a>
+						<a class="btn" href="index.php?page=crud?type=<?php$type?>">Back</a>
 					</div>
 
+					
 
 				</div>
 			</div>
