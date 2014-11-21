@@ -8,11 +8,11 @@
 	}
 	elseif ($type == "archive")
 	{
-	$sql = 'SELECT * FROM article WHERE is_archive=1 ORDER BY id DESC';
+	$sql = 'SELECT * FROM article ORDER BY id DESC';
 	}
 	elseif ($type == "article")
 	{
-	$sql = 'SELECT * FROM article WHERE is_archive=0 ORDER BY id DESC';
+	$sql = 'SELECT * FROM archive ORDER BY id DESC';
 	}
 	
 ?>

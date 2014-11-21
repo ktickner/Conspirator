@@ -1,6 +1,9 @@
 <?php
      
     require 'database.php';
+	
+	//getting page "type" from url to distinguish between archive and article
+	$type = (isset($_GET['type']) ? $_GET['type'] : null);
  
     if ( !empty($_POST)) {
         // keep track validation errors
@@ -10,9 +13,15 @@
         $dateError = null;
         $authorError = null;
         $categoryError = null;
-        $isArchiveError = null;
+		
+		
+		//adding in quickfacts vars in case of archive
+		if ($type == 'archive')
+		{
         $quickFactsError = null;
-         
+        $quickFacts = $_POST['quickFacts'];
+		}
+		
         // keep track post values
         $name = $_POST['name'];
         $image = $_POST['image'];
@@ -20,46 +29,69 @@
         $date = $_POST['date'];
         $author = $_POST['author'];
         $category = $_POST['category'];
-        $isArchive = $_POST['isArchive'];
-        $quickFacts = (isset($_POST['quickFacts']) ? $_POST['quickFacts'] : null;
-         
-		 //up to editing validations
 		 
 		 
         // validate input
         $valid = true;
         if (empty($name)) {
-            $nameError = 'Please enter Name';
+            $nameError = 'Please enter the '.$type.'\'s name';
             $valid = false;
         }
          
-        if (empty($email)) {
-            $emailError = 'Please enter Email Address';
-            $valid = false;
-        } else if ( !filter_var($email,FILTER_VALIDATE_EMAIL) ) {
-            $emailError = 'Please enter a valid Email Address';
+        if (empty($image)) {
+            $imageError = 'Please upload a feature image';
             $valid = false;
         }
          
-        if (empty($mobile)) {
-            $mobileError = 'Please enter Mobile Number';
+        if (empty($content)) {
+            $contentError = 'Please enter some content';
             $valid = false;
         }
+         
+        if (empty($category)) {
+            $categoryError = 'Please choose a category';
+            $valid = false;
+        }
+        
+		if ($type == 'archive')
+		{
+			if (empty($quickfacts)) {
+				$quickfactsError = 'Please enter the archive\'s quick facts';
+				$valid = false;
+			}
+		}
          
         // insert data
         if ($valid) {
-            $pdo = Database::connect();
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $sql = "INSERT INTO customers (name,email,mobile) values(?, ?, ?)";
-            $q = $pdo->prepare($sql);
-            $q->execute(array($name,$email,$mobile));
-            Database::disconnect();
-            header("Location: index.php");
+			if ($type == 'archive')
+			{
+				$pdo = Database::connect();
+				$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$sql = "INSERT INTO archive (archive_name,image,content,date_created,author_id,category_id,quick_facts) values(?, ?, ?, ?, ?, ?, ?)";
+				$q = $pdo->prepare($sql);
+				$q->execute(array($name,$email,$mobile));
+				Database::disconnect();
+				header("Location: index.php?page=crud&type=article");
+			}
+			elseif ($type == 'article')
+			{
+				$pdo = Database::connect();
+				$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$sql = "INSERT INTO article (article_name,image,content,date_created,author_id,category_id) values(?, ?, ?, ?, ?, ?)";
+				$q = $pdo->prepare($sql);
+				$q->execute(array($name,$email,$mobile));
+				Database::disconnect();
+				header("Location: index.php?page=crud&type=article");
+			}
+			else
+			{
+				header("Location: index.php");
+			}
         }
     }
-	
-	$type = (isset($_GET['type']) ? $_GET['type'] : null);
 ?>
+
+		<!-- Up to changing inputs -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -135,13 +167,13 @@
 			</div>
 			
 			<?php
-				}
+			}
 			else
 			{
 			?>
 			
 			<div class="alert alert-danger">
-				<h3>I'm not sure you're meant to be here! PLease return to the homepage <a href="index.php">here</a></h3>
+				<h3>I'm not sure you're meant to be here! Please return to the homepage <a href="index.php">here</a></h3>
 			</div>
 			
 			<?php
