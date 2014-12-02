@@ -5,16 +5,36 @@
 		$id = $_REQUEST['id'];
 	}
 
-	if ( null==$id ) {
+	if ( null==$id ) 
+	{
 		header("Location: index.php");
-	} else {
-		$pdo = Database::connect();
-		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		$sql = "SELECT * FROM customers where id = ?";
-		$q = $pdo->prepare($sql);
-		$q->execute(array($id));
-		$data = $q->fetch(PDO::FETCH_ASSOC);
-		Database::disconnect();
+	} 
+	else 
+	{
+		if ($type == 'article')
+		{
+			$pdo = Database::connect();
+			$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$sql = "SELECT * FROM article WHERE id = ?";
+			$q = $pdo->prepare($sql);
+			$q->execute(array($id));
+			$data = $q->fetch(PDO::FETCH_ASSOC);
+			Database::disconnect();
+		}
+		elseif ($type == 'archive')
+		{
+			$pdo = Database::connect();
+			$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$sql = "SELECT * FROM archive WHERE id = ?";
+			$q = $pdo->prepare($sql);
+			$q->execute(array($id));
+			$data = $q->fetch(PDO::FETCH_ASSOC);
+			Database::disconnect();
+		}
+		else
+		{
+			header("Location: index.php");
+		}
 	}
 ?>
 
@@ -22,8 +42,8 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<link   href="css/bootstrap.min.css" rel="stylesheet">
-		<script src="js/bootstrap.min.js"></script>
+		<link   href="styles/bootstrap.css" rel="stylesheet">
+		<script src="js/bootstrap.js"></script>
 	</head>
 
 	<body>
@@ -31,12 +51,12 @@
 
 			<div class="span10 offset1">
 				<div class="row">
-					<h3>Read a Customer</h3>
+					<h3>Read an Article</h3>
 				</div>
 
 				<div class="form-horizontal" >
 					<div class="control-group">
-						<label class="control-label">Name</label>
+						<label class="control-label">Article Name</label>
 						<div class="controls">
 							<label class="checkbox">
 							<?php echo $data['name'];?>
@@ -44,18 +64,18 @@
 						</div>
 					</div>
 					<div class="control-group">
-						<label class="control-label">Email Address</label>
+						<label class="control-label">Feature Image</label>
 						<div class="controls">
 							<label class="checkbox">
-							<?php echo $data['email'];?>
+							<?php echo $data['image'];?>
 							</label>
 						</div>
 					</div>
 					<div class="control-group">
-						<label class="control-label">Mobile Number</label>
+						<label class="control-label">Author</label>
 						<div class="controls">
 							<label class="checkbox">
-							<?php echo $data['mobile'];?>
+							<?php echo $data['author'];?>
 							</label>
 						</div>
 					</div>

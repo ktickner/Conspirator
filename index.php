@@ -14,9 +14,30 @@
 		<!-- Bootstrap -->
 		<link href="styles/bootstrap.css" rel="stylesheet" type="text/css">
 		<link href="styles/main.css" rel="stylesheet" type="text/css">
+		
+		<!-- Tiny MCE -->
+		
+		<script type="text/javascript" src="tinymce/js/tinymce/tinymce.min.js"></script>
+		 <script type="text/javascript">
+			tinymce.init({
+				selector: "textarea",theme: "modern",width: 680,height: 300,
+				plugins: [
+					"advlist autolink link image lists charmap print preview hr anchor pagebreak",
+					"searchreplace wordcount visualblocks visualchars insertdatetime media nonbreaking",
+					"table contextmenu directionality emoticons paste textcolor responsivefilemanager filemanager"
+				],
+				toolbar1: "undo redo | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | styleselect",
+				toolbar2: "| responsivefilemanager | link unlink anchor | image media | forecolor backcolor | print preview code ",
+				image_advtab: true , relative_urls: false,
+				 
+				external_filemanager_path:"/ResponsiveFilemanager-master/filemanager/",
+				filemanager_title:"Responsive Filemanager",
+				//external_plugins: { "filemanager" : "/ResponsiveFilemanager-master/filemanager/plugin.min.js"}
+			});
+		 </script>
 
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via  file:// -->
 		<!--[if lt IE 9]>
 		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>

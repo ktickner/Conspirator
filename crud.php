@@ -8,11 +8,11 @@
 	}
 	elseif ($type == "archive")
 	{
-	$sql = 'SELECT * FROM article ORDER BY id DESC';
+	$sql = 'SELECT * FROM archive ORDER BY id DESC';
 	}
 	elseif ($type == "article")
 	{
-	$sql = 'SELECT * FROM archive ORDER BY id DESC';
+	$sql = 'SELECT * FROM article ORDER BY id DESC';
 	}
 	
 ?>
@@ -39,7 +39,7 @@
 				</p>
 				
 				<?php
-					if ($sql == null)
+					if (empty($pdo->query($sql)))
 					{
 				?>
 				

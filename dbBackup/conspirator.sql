@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 19, 2014 at 09:17 AM
+-- Generation Time: Nov 29, 2014 at 09:23 AM
 -- Server version: 5.6.16
 -- PHP Version: 5.5.11
 
@@ -23,15 +23,20 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `archive_facts`
+-- Table structure for table `archive`
 --
 
-CREATE TABLE IF NOT EXISTS `archive_facts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `archive_id` int(11) NOT NULL,
-  `content` text NOT NULL,
+CREATE TABLE IF NOT EXISTS `archive` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `archive_name` varchar(30) NOT NULL,
+  `image` varchar(50) NOT NULL,
+  `content` mediumtext NOT NULL,
+  `date_created` date NOT NULL,
+  `author_id` int(11) NOT NULL,
+  `category` varchar(35) NOT NULL,
+  `quick_facts` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -46,35 +51,9 @@ CREATE TABLE IF NOT EXISTS `article` (
   `content` mediumtext NOT NULL,
   `date_created` date NOT NULL,
   `author_id` int(11) NOT NULL,
-  `category_id` int(11) NOT NULL,
-  `is_archive` tinyint(1) NOT NULL,
+  `category` varchar(35) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `category`
---
-
-CREATE TABLE IF NOT EXISTS `category` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `cat_name` varchar(25) NOT NULL,
-  `css_link` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
-
---
--- Dumping data for table `category`
---
-
-INSERT INTO `category` (`id`, `cat_name`, `css_link`) VALUES
-(1, 'history', 'styles/history.css'),
-(2, 'evilCorps', 'styles/evilcorps.css'),
-(3, 'aliens', 'styles/aliens.css'),
-(4, 'exoticCreatures', 'styles/exotic.css'),
-(5, 'urbanLegends', 'styles/urbanleg.css'),
-(6, 'endOfDays', 'styles/endofdays.css');
 
 -- --------------------------------------------------------
 
