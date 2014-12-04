@@ -11,6 +11,7 @@
 	}
 	
 	$targetFile = $targetDir . basename($_FILES["image"]["name"]);
+	$upload = "";
 	$uploadOk = 1;
 	$fileNotImage = 0;
 	$fileExists = 0;
@@ -20,10 +21,10 @@
 	
 	// Check id image file is an actual image or fake image
 	
-	if(isset($_POST['Create']) || isset($_POST['Register']))
+	if(isset($_POST['create']) || isset($_POST['register']))
 	{
 		$check = getimagesize($_FILES["image"]["tmp_name"]);
-		if($check !== false) 
+		if($check != false) 
 		{
 			$uploadOk = 1;
 		}
@@ -35,13 +36,13 @@
 	}
 	
 	// Check regex to insure compliant file name
-	
-	if(!preg_match('^[\w,\s-]{1, 251}+\.[A-Za-z]{3, 4}$', $targetFile))
+	/*
+	if(!preg_match('/^[\w,\s-]{1,251}+\.[A-Za-z]{3,4}$/', $targetFile))
 	{
 		$uploadOk = 0;
-		$imageError = 'File name is invalid.'
+		$imageError = 'File name is invalid.';
 	}
-	
+	*/
 	
 	// Check for duplicate file
 	
@@ -55,7 +56,7 @@
 	
 	if($_FILES["image"]["size"] > 1000000)
 	{
-		$imageError = 'Sorry, your file is too large'
+		$imageError = 'Sorry, your file is too large';
 		$uploadOk = 0;
 	}
 	
@@ -73,7 +74,7 @@
 	{
 		if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFile))
 		{
-			$image = $targetFile;
+			$upload = $targetFile;
 		}
 		else
 		{

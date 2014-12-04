@@ -1,10 +1,8 @@
 <?php
-	
+	session_start();
 	// TO BE REQUIRED IN REGISTER PAGE
 	
-	session_start();
-	
-	require 'database.php';
+	require_once 'database.php';
 	
 	//setting previous page var for redirection after process
 	if(isset($_COOKIE['prevPage']))
@@ -23,7 +21,9 @@
 		$valid = true;
 		
 		$email = "";
+		$emailRepeat = "";
 		$password = "";
+		$passwordRepeat = "";
 		$firstName = "";
 		$lastName = "";
 		$dateJoined = "";
@@ -38,6 +38,8 @@
 		$imageError = "";
 		$bioError = "";
 		
+		$errors = array();
+		
 		
 		# Validate and Sanitize all user input #
 
@@ -45,31 +47,57 @@
 		if ($_POST['email']) {
 			$email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
 			$email = filter_var($email, FILTER_VALIDATE_EMAIL);
-			if(!$email)
+			if(empty($email))
 			{
 				$valid = false;
 				$emailError = 'Email invalid, please try again.';
+				$errors[] = $emailError;
 			}
 			else
 			{
-				$pdo = Database::connect();
-				$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-				$sql = "SELECT email FROM user";
-				foreach ($pdo->query($sql) as $row)
+				if ($_POST['emailRepeat']) 
 				{
-					if($row['email'] == $email)
+					$emailRepeat = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+					$emailRepeat = filter_var($email, FILTER_VALIDATE_EMAIL);
+					if(empty($emailRepeat))
 					{
 						$valid = false;
-						$emailError = 'Email address is already in use, please try a different one.'
+						$emailError = 'Email inputs do not match, please try again.';
+						$errors[] = $emailError;
+					}
+					else
+					{
+						if($email == $emailRepeat)
+						{
+							$pdo = Database::connect();
+							$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+							$sql = "SELECT email FROM user";
+							foreach ($pdo->query($sql) as $row)
+							{
+								if($row['email'] == $email)
+								{
+									$valid = false;
+									$emailError = 'Email address is already in use, please try a different one.';
+									$errors[] = $emailError;
+								}
+							}
+							Database::disconnect();
+						}
+						else
+						{
+							$valid = false;
+							$emailError = 'Email inputs do not match, please try again.';
+							$errors[] = $emailError;
+						}
 					}
 				}
-				Database::disconnect();
 			}
 		}
 		else
 		{
 			$valid = false;
 			$emailError = 'Please enter an email address.';
+			$errors[] = $emailError;
 		}
 		
 		if ($_POST['password'])
@@ -77,52 +105,77 @@
 			$password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
 			if (ctype_alnum($password) && strlen($password) > 7)
 			{
-				$password = password_hash($password, PASSWORD_DEFAULT);
+				$passwordRepeat = filter_input(INPUT_POST, 'passwordRepeat', FILTER_SANITIZE_STRING);
+				if (ctype_alnum($passwordRepeat) && strlen($passwordRepeat) > 7)
+				{
+					if($password == $passwordRepeat)
+					{
+						$password = password_hash($password, PASSWORD_DEFAULT);
+					}
+					else
+					{
+						$valid = false;
+						$passwordError = 'Password inputs do not match, please try again';
+						$errors[] = $passwordError;
+					}
+				}
+				else
+				{
+					$valid = false;
+					$passwordError = 'Password inputs do not match, please try again';
+					$errors[] = $passwordError;
+				}
 			}
 			else
 			{
 				$valid = false;
 				$passwordError = 'Password is invalid, please review the guidelines and try again.';
+				$errors[] = $passwordError;
 			}
 		}
 		else
 		{
 			$valid = false;
 			$passwordError = 'Please enter a password.';
+			$errors[] = $passwordError;
 		}
 		
 		if($_POST['firstName'])
 		{
 			$firstName = filter_input(INPUT_POST, 'firstName', FILTER_SANITIZE_STRING);
-			if(!preg_match('^[a-zA-Z]{1,25}$', $firstName))
+			if(!preg_match('/^[a-zA-Z]{1,25}$/', $firstName))
 			{
 				$valid = false;
 				$firstNameError = 'First name input is invalid, please review the guidelines and try again.';
+				$errors[] = $firstNameError;
 			}
 		}
 		else
 		{
 			$valid = false;
 			$firstNameError = 'Please enter your first name.';
+			$errors[] = $firstNameError;
 		}
 		
 		if($_POST['lastName'])
 		{
 			$lastName = filter_input(INPUT_POST, 'lastName', FILTER_SANITIZE_STRING);
-			if(!preg_match('^[a-zA-Z]{1,25}$', $lastName))
+			if(!preg_match('/^[a-zA-Z]{1,25}$/', $lastName))
 			{
 				$valid = false;
 				$lastNameError = 'Last name input is invalid, please review the guidelines and try again.';
+				$errors[] = $lastNameError;
 			}
 		}
 		else
 		{
 			$valid = false;
 			$lastNameError = 'Please enter your last name.';
+			$errors[] = $lastNameError;
 		}
 		
 		//Sets avatar image and string
-		if($_POST['avatar'])
+		if(isset($_POST['avatar']))
 		{
 			require 'imageupload.php';
 			if($uploadOk != 1)
@@ -132,7 +185,7 @@
 		}
 		else
 		{
-			$image = 'default.jpg';
+			$avatar = 'default.jpg';
 		}
 		
 		if($_POST['bio'])
@@ -141,13 +194,15 @@
 			if(strlen($password) > 512)
 			{
 				$valid = false;
-				$bioError = 'Your bio is too long, please reduce to 512 characters and resubmit.'
+				$bioError = 'Your bio is too long, please reduce to 512 characters and resubmit.';
+				$errors[] = $bioError;
 			}
 		}
 		else
 		{
 			$valid = false;
 			$bioError = 'Please enter a short personal bio.';
+			$errors[] = $bioError;
 		}
 		
 		# Functions to be run if all input is valid #
@@ -169,7 +224,8 @@
 			$sql = "SELECT id FROM user WHERE email = ?";
 			$q = $pdo->prepare($sql);
 			$q->execute(array($email));
-			$user = $q->fetch(PDO::FETCH_ASSOC);
+			$f = $q->fetch(PDO::FETCH_ASSOC);
+			$user = $f['id'];
 			
 			Database::disconnect();
 			
@@ -236,7 +292,8 @@
 					$sql = "SELECT id FROM user WHERE email = ?";
 					$q = $pdo->prepare($sql);
 					$q->execute(array($email));
-					$user = $q->fetch(PDO::FETCH_ASSOC);
+					$f = $q->fetch(PDO::FETCH_ASSOC);
+					$user = $f['id'];
 					
 					Database::disconnect();
 					

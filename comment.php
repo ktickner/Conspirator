@@ -103,11 +103,11 @@
 			$pdo = Database::connect();
 			$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$sql = "SELECT comment.comment, comment.date_created, user.first_name, user.last_name 
-				FROM comment 
-				INNER JOIN user 
-				ON comment.user_id=user.id 
-				WHERE article_id=$article
-				ORDER BY date_created DESC";
+				FROM comment, user
+				WHERE comment.user_id=user.id 
+				AND comment.article_id=$article
+				ORDER BY comment.date_created DESC";
+			echo($sql);
 		}
 		else
 		{
