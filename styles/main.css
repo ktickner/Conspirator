@@ -124,3 +124,12 @@ nav {
 #navSearch {
 	width: 200px;
 }
+
+.loginForm{
+	margin: 2px;
+}
+
+.register-btn {
+	margin-bottom: 10px;
+	margin-right: 5px;
+}
